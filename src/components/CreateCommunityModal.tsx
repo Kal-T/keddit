@@ -75,3 +75,5 @@ const CreateCommunityModal = ({
     </>
   );
 };
+
+export default CreateCommunityModal;
