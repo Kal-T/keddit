@@ -49,7 +49,7 @@ const CreateDropdown = ({isOpen, onClose}: CreateDropdownProps) => {
                 <div className="option-icon">
                         <FaPlus />
                     </div>
-                    <div className="option-content">
+                    <div className="    -content">
                         <span className="option-title">Community</span>
                         <span className="option-description">Create a new community</span>
                     </div>
