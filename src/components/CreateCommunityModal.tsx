@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import "../styles/CreateCommunityModal.css";
@@ -18,8 +18,42 @@ const CreateCommunityModal = ({
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const creatSubreddit = useMutation(api.subreddit.create);
 
   if (!isOpen) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!name) {
+      setError("Community name is required");
+      return;
+    }
+
+    if (name.length < 3 || name.length > 21) {
+      setError("Community name must be between 3 and 21 characters");
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(name)) {
+      setError(
+        "Community name can only contain letters, numbers, and underscores"
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    await creatSubreddit({ name, description })
+      .then((result) => {
+        console.log(result);
+        onClose();
+      })
+      .catch((err) => {
+        setError(`Failded to create community. ${err.data}`);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <>
@@ -65,9 +99,20 @@ const CreateCommunityModal = ({
           {error && <div className="error-message">{error}</div>}
 
           <div className="modal-folder">
-            <button type="button" className="cancel-button" onClick={onClose} disabled={isLoading}>Cancel</button>
-            <button type="submit" className="create-button" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Community"}
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={onClose}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="create-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating..." : "Create Community"}
             </button>
           </div>
         </form>
