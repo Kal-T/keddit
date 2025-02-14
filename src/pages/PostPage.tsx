@@ -8,7 +8,7 @@ import "../styles/PostPage.css"
 const PostPage = () => {
     const {postId} = useParams();
     const navigate = useNavigate();
-    const post = useQuery(api.post.getPost, {id: postId})
+    const post = postId ? useQuery(api.post.getPost, {id: postId}) : null;
 
     if(!post){
         return <div className="post-page loading">

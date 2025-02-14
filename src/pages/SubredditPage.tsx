@@ -3,6 +3,7 @@ import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
 
 import "../styles/SubredditPage.css"
+import PostCard from "../components/PostCard"
 
 const SubredditPage = () => {
     const {subredditName} = useParams()
@@ -25,9 +26,16 @@ const SubredditPage = () => {
             {subreddit.description && <p>{subreddit.description}</p>}
         </div>
         <div className="posts-container">
-            <div className="no-posts">
+            {subreddit.posts?.length === 0 ? (
+                <div className="no-posts">
                 <p>No posts yet. Be the first to post</p>
             </div>
+            ): (
+                subreddit.posts?.map((post) => (
+                    <PostCard key={post._id} post={post} />
+                ))
+            )}
+            
         </div>
     </div>
 }

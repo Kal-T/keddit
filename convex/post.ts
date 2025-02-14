@@ -56,7 +56,7 @@ async function getEnrichedPost(ctx: QueryCtx, post: Doc<"post">): Promise<Enrich
     }
 }
 
-async function getEnrichedPosts(ctx: QueryCtx, posts: Doc<"post">[]): Promise<EnrichedPost[]> {
+export async function getEnrichedPosts(ctx: QueryCtx, posts: Doc<"post">[]): Promise<EnrichedPost[]> {
     return Promise.all(posts.map((post) => getEnrichedPost(ctx, post)))
 }
 

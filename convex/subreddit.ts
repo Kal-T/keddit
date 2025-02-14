@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import { getEnrichedPosts } from "./post";
 import { getCurrentUserOrThrow } from "./users";
 import { ConvexError, convexToJson, v } from "convex/values";
 
@@ -31,6 +32,13 @@ export const get = query({
 
     if (!subreddit) return null;
 
-    return subreddit;
+    const posts = await ctx.db
+      .query("post")
+      .withIndex("bySubreddit", (q) => q.eq("subreddit", subreddit._id))
+      .collect();
+
+    const enrichedPosts = await getEnrichedPosts(ctx, posts);
+
+    return {...subreddit, posts: enrichedPosts};
   },
 });
