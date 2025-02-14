@@ -2,6 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { convexToJson, v } from "convex/values";
 import { getCurrentUserOrThrow } from "./users";
 import { paginationOptsValidator } from "convex/server";
+import { commentCountKey, counts } from "./counter";
 
 export const create = mutation({
   args: {
@@ -15,6 +16,7 @@ export const create = mutation({
       postId: args.postId,
       authorId: user._id,
     });
+    await counts.inc(ctx, commentCountKey(args.postId))
   },
 });
 
@@ -38,3 +40,10 @@ export const getComments = query({
         }))
     }
   });
+
+  export const getCommentCount = query({
+    args: {postId: v.id("post")},
+    handler: async (ctx, args) => {
+        return await counts.count(ctx, commentCountKey(args.postId))
+    }
+})
