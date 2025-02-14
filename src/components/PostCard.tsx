@@ -6,6 +6,8 @@ import { api } from "../../convex/_generated/api";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "../../convex/_generated/dataModel";
 import "../styles/PostCard.css";
+import exp from "constants";
+import { useState } from "react";
 
 interface Post {
   _id: Id<"post">;
@@ -13,7 +15,7 @@ interface Post {
   body: string;
   _creationTime: number;
   authorId: string;
-  imageUrl: string;
+  imageUrl?: string;
   author?: {
     username: string;
   };
@@ -107,3 +109,51 @@ const PostContent = ({
     </>
   );
 };
+
+const PostCard = ({
+  post,
+  showSubreddit = false,
+  expandedView = false,
+}: PostCardProps) => {
+  const [showComments, setShowComments] = useState(expandedView);
+  const navigate = useNavigate();
+  const { user } = useUser();
+  const ownedByCurrentUser = post.author?.username === user?.username;
+
+  const handleComment = () => {};
+
+  const handleDelete = async () => {};
+
+  const handleSubmitComment = (content: string) => {};
+
+  return (
+    <div className={`post-card ${expandedView ? "expanded" : ""}`}>
+      <div className="post-content">
+        <PostHeader
+          author={post.author}
+          subreddit={post.subreddit ?? { name: "deleted" }}
+          showSubreddit={showSubreddit}
+          creationTime={post._creationTime}
+        />
+        <PostContent
+          subject={post.subject}
+          body={post.body}
+          image={post.imageUrl}
+          expandedView={expandedView}
+        />
+
+        <div className="post-actions">
+            <button className="action-button" onClick={handleComment}>
+                <FaRegCommentAlt />
+                <span>0 Comments</span>
+            </button>
+            {ownedByCurrentUser && (
+                <button className='action-button delete-button' onClick={handleDelete}><FaTrash /><span>Delete</span></button>
+            )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PostCard;
